@@ -37,12 +37,13 @@ COLOR_LIFR		= (0,125,125)		# Magenta
 COLOR_LIFR_FADE		= (0,75,75)		# Magenta Fade for wind
 COLOR_CLEAR		= (0,0,0)		# Clear
 COLOR_LIGHTNING		= (255,255,255)		# White
+COLOR_ACTIVE_AIRPORT    = (255,165,0)                    # Orange
 
 # ----- Blink/Fade functionality for Wind and Lightning -----
 # Do you want the METARMap to be static to just show flight conditions, or do you also want blinking/fading based on current wind conditions
-ACTIVATE_WINDCONDITION_ANIMATION = False	# Set this to False for Static or True for animated wind conditions
+ACTIVATE_WINDCONDITION_ANIMATION = True 	# Set this to False for Static or True for animated wind conditions
 #Do you want the Map to Flash white for lightning in the area
-ACTIVATE_LIGHTNING_ANIMATION = False		# Set this to False for Static or True for animated Lightning
+ACTIVATE_LIGHTNING_ANIMATION = True		# Set this to False for Static or True for animated Lightning
 # Fade instead of blink
 FADE_INSTEAD_OF_BLINK	= True			# Set to False if you want blinking
 # Blinking Windspeed Threshold
