@@ -15,6 +15,9 @@ try:
 except ImportError:
 	displaymetar = None
 
+
+currentAirport = None
+
 # metar.py script iteration 1.4.2
 
 # ---------------------------------------------------------------------------
@@ -232,7 +235,7 @@ while looplimit > 0:
 			else:
 				color = COLOR_CLEAR
 
-		print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
+		#print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
 		pixels[i] = color
 		i += 1
 
