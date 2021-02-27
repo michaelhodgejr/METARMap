@@ -1,11 +1,21 @@
 #!/usr/bin/env python3
 
+import RPi.GPIO as GPIO
 import urllib.request
 import xml.etree.ElementTree as ET
 import board
 import neopixel
 import time
 import datetime
+import time
+import digitalio
+
+
+if switch.value:
+    print("SWITCH ON")
+else:
+    print("SWITCH OFF")
+
 try:
 	import astral
 except ImportError:
@@ -16,7 +26,7 @@ except ImportError:
 	displaymetar = None
 
 
-currentAirport = None
+displayAirportCode = None
 
 # metar.py script iteration 1.4.2
 
@@ -25,7 +35,7 @@ currentAirport = None
 # ---------------------------------------------------------------------------
 
 # NeoPixel LED Configuration
-LED_COUNT		= 50			# Number of LED pixels.
+LED_COUNT		= 30			# Number of LED pixels.
 LED_PIN			= board.D18		# GPIO pin connected to the pixels (18 is PCM).
 LED_BRIGHTNESS		= 0.5			# Float from 0.0 (min) to 1.0 (max)
 LED_ORDER		= neopixel.GRB		# Strip type and colour ordering
@@ -41,6 +51,8 @@ COLOR_LIFR_FADE		= (0,75,75)		# Magenta Fade for wind
 COLOR_CLEAR		= (0,0,0)		# Clear
 COLOR_LIGHTNING		= (255,255,255)		# White
 COLOR_ACTIVE_AIRPORT    = (255,165,0)                    # Orange
+
+BOARD_PIN               = board.D17
 
 # ----- Blink/Fade functionality for Wind and Lightning -----
 # Do you want the METARMap to be static to just show flight conditions, or do you also want blinking/fading based on current wind conditions
@@ -68,7 +80,7 @@ USE_SUNRISE_SUNSET 	= True			# Set to True if instead of fixed times for bright/
 LOCATION 		= "Seattle"		# Nearby city for Sunset/Sunrise timing, refer to https://astral.readthedocs.io/en/latest/#cities for list of cities supported
 
 # ----- External Display support -----
-ACTIVATE_EXTERNAL_METAR_DISPLAY = False		# Set to True if you want to display METAR conditions to a small external display
+ACTIVATE_EXTERNAL_METAR_DISPLAY = True		# Set to True if you want to display METAR conditions to a small external display
 DISPLAY_ROTATION_SPEED = 5.0			# Float in seconds, e.g 2.0 for two seconds
 
 # ---------------------------------------------------------------------------
@@ -224,7 +236,10 @@ while looplimit > 0:
 		if conditions != None:
 			windy = True if (ACTIVATE_WINDCONDITION_ANIMATION and windCycle == True and (conditions["windSpeed"] > WIND_BLINK_THRESHOLD or conditions["windGust"] == True)) else False
 			lightningConditions = True if (ACTIVATE_LIGHTNING_ANIMATION and windCycle == False and conditions["lightning"] == True) else False
-			if conditions["flightCategory"] == "VFR":
+            
+    if airportcode == displayAirportCode:
+        color = COLOR_ACTIVE_AIRPORT
+			elif conditions["flightCategory"] == "VFR":
 				color = COLOR_VFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else (COLOR_VFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
 			elif conditions["flightCategory"] == "MVFR":
 				color = COLOR_MVFR if not (windy or lightningConditions) else COLOR_LIGHTNING if lightningConditions else (COLOR_MVFR_FADE if FADE_INSTEAD_OF_BLINK else COLOR_CLEAR) if windy else COLOR_CLEAR
@@ -246,9 +261,11 @@ while looplimit > 0:
 	if disp is not None:
 		if displayTime <= DISPLAY_ROTATION_SPEED:
 			displaymetar.outputMetar(disp, stationList[displayAirportCounter], conditionDict.get(stationList[displayAirportCounter], None))
+                        displayAirportCode = stationList[displayAirportCounter]
 			displayTime += BLINK_SPEED
 		else:
 			displayTime = 0.0
+                        displayAirportCode = stationList[displayAirportCounter]
 			displayAirportCounter = displayAirportCounter + 1 if displayAirportCounter < numAirports-1 else 0
 			print("showing METAR Display for " + stationList[displayAirportCounter])
 
@@ -257,5 +274,8 @@ while looplimit > 0:
 	windCycle = False if windCycle else True
 	looplimit -= 1
 
+GPIO.cleanup()
+
 print()
 print("Done")
+
