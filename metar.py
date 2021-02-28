@@ -251,6 +251,7 @@ while looplimit > 0:
 				color = COLOR_CLEAR
 
 		#print("Setting LED " + str(i) + " for " + airportcode + " to " + ("lightning " if lightningConditions else "") + ("windy " if windy else "") + (conditions["flightCategory"] if conditions != None else "None") + " " + str(color))
+
 		pixels[i] = color
 		i += 1
 
@@ -267,7 +268,8 @@ while looplimit > 0:
 			displayTime = 0.0
                         displayAirportCode = stationList[displayAirportCounter]
 			displayAirportCounter = displayAirportCounter + 1 if displayAirportCounter < numAirports-1 else 0
-			print("showing METAR Display for " + stationList[displayAirportCounter])
+			#print("showing METAR Display for " + stationList[displayAirportCounter])
+			currentAirport = stationList[displayAirportCounter]
 
 	# Switching between animation cycles
 	time.sleep(BLINK_SPEED)
